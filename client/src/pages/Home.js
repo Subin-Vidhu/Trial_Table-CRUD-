@@ -15,6 +15,15 @@ const Home = () => {
   useEffect(() => {
     loadData();
   }, []);
+
+  const deleteContact = (userid) => {
+    if (window.confirm("Are you sure?")) {
+      axios.delete(`http://localhost:5000/api/remove/${userid}`);
+      //console.log(userid);
+      toast.success("Contact Deleted Successfully");
+      setTimeout(() => loadData(), 500);
+    }
+  };
   return (
     <div style={{ marginTop: "150px" }}>
       <Link to="/addContact">
@@ -33,17 +42,22 @@ const Home = () => {
         <tbody>
           {data.map((item, index) => {
             return (
-              <tr key={item.id}>
+              <tr key={item.userid}>
                 <th scope="row">{index + 1}</th>
                 <td>{item.username}</td>
                 <td>{item.email}</td>
                 <td>{item.phone}</td>
                 <td>
-                  <Link to={`/update/${item.id}`}>
+                  <Link to={`/update/${item.userid}`}>
                     <button className="btn btn-edit">Edit</button>
                   </Link>
-                  <button className="btn btn-delete">Delete</button>
-                  <Link to={`/view/${item.id}`}>
+                  <button
+                    className="btn btn-delete"
+                    onClick={() => deleteContact(item.userid)}
+                  >
+                    Delete
+                  </button>
+                  <Link to={`/view/${item.userid}`}>
                     <button className="btn btn-view">View</button>
                   </Link>
                 </td>

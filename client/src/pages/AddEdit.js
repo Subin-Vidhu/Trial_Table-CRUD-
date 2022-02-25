@@ -17,21 +17,45 @@ const AddEdit = () => {
 
   const history = useNavigate();
 
+  const { id } = useParams();
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5000/api/get/${id}`)
+      .then((resp) => setState({ ...resp.data[0] }));
+  }, [id]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name || !email || !phone) {
       toast.error("Please provide value to into each field");
     } else {
-      axios
-        .post("http://localhost:5000/api/post", {
-          name,
-          email,
-          phone,
-        })
-        .then(() => {
-          setState({ name: "", email: "", phone: "" });
-        })
-        .catch((err) => toast.error(err.response.data));
+      if (!id) {
+        axios
+          .post("http://localhost:5000/api/post", {
+            name,
+            email,
+            phone,
+          })
+          .then(() => {
+            setState({ name: "", email: "", phone: "" });
+          })
+          .catch((err) => toast.error(err.response.data));
+        toast.success("Contact Added Successfully");
+      } else {
+        axios
+          .put(`http://localhost:5000/api/update/${id}`, {
+            name,
+            email,
+            phone,
+          })
+          .then(() => {
+            setState({ name: "", email: "", phone: "" });
+          })
+          .catch((err) => toast.error(err.response.data));
+        toast.success("Contact Updated Successfully");
+      }
+
       setTimeout(() => history.push("/"), 500);
     }
   };
@@ -56,7 +80,7 @@ const AddEdit = () => {
           id="name"
           name="name"
           placeholder="Your Name..."
-          value={name}
+          value={name || ""}
           onChange={handleInputChange}
         />
         <label htmlFor="email">Email</label>
@@ -65,7 +89,7 @@ const AddEdit = () => {
           id="email"
           name="email"
           placeholder="Your Email..."
-          value={email}
+          value={email || ""}
           onChange={handleInputChange}
         />
         <label htmlFor="phone">phone</label>
@@ -74,10 +98,10 @@ const AddEdit = () => {
           id="phone"
           name="phone"
           placeholder="Your phone..."
-          value={phone}
+          value={phone || ""}
           onChange={handleInputChange}
         />
-        <input type="submit" value="Save" />
+        <input type="submit" value={id ? "Update" : "Save"} />
         <Link to="/">
           <input type="button" value="Go Back" />
         </Link>

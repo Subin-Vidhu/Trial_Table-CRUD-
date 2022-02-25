@@ -21,13 +21,49 @@ app.get("/api/get", (req, res) => {
   });
 });
 app.post("/api/post", (req, res) => {
-  const { username, email, phone } = req.body;
+  const { name, email, phone } = req.body;
+
   const sqlInsert =
     "INSERT INTO table1 (username, email, phone) VALUES (?, ?, ?)";
-  db.query(sqlInsert, [username, email, phone], (err, result) => {
+  db.query(sqlInsert, [name, email, phone], (err, result) => {
     if (err) {
       console.log(err);
     }
+  });
+});
+
+app.delete("/api/remove/:id", (req, res) => {
+  const { id } = req.params;
+  //console.log(req.params);
+  const sqlRemove = "DELETE FROM table1 WHERE userid = ?";
+  db.query(sqlRemove, id, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+  });
+});
+
+app.get("/api/get/:id", (req, res) => {
+  const { id } = req.params;
+  const sglGet = "SELECT * FROM table1 WHERE userid = ?";
+  db.query(sglGet, id, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    res.send(result);
+  });
+});
+
+app.put("/api/update/:id", (req, res) => {
+  const { id } = req.params;
+  const { name, email, phone } = req.body;
+  const sglUpdate =
+    "UPDATE table1 SET username = ?, email = ?, phone = ? WHERE userid = ?";
+  db.query(sglUpdate, [name, email, phone, id], (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    res.send(result);
   });
 });
 
