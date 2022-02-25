@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, useParams, Link } from "react-router-dom";
+import { useHistory, useParams, Link, useNavigate } from "react-router-dom";
 import "./AddEdit.css";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -7,16 +7,33 @@ import axios from "axios";
 const initialState = {
   name: "",
   email: "",
-  contact: "",
+  phone: "",
 };
 
 const AddEdit = () => {
   const [state, setState] = useState(initialState);
 
-  const { name, email, contact } = state;
+  const { name, email, phone } = state;
+
+  const history = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!name || !email || !phone) {
+      toast.error("Please provide value to into each field");
+    } else {
+      axios
+        .post("http://localhost:5000/api/post", {
+          name,
+          email,
+          phone,
+        })
+        .then(() => {
+          setState({ name: "", email: "", phone: "" });
+        })
+        .catch((err) => toast.error(err.response.data));
+      setTimeout(() => history.push("/"), 500);
+    }
   };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -51,13 +68,13 @@ const AddEdit = () => {
           value={email}
           onChange={handleInputChange}
         />
-        <label htmlFor="contact">Contact</label>
+        <label htmlFor="phone">phone</label>
         <input
           type="number"
-          id="contact"
-          name="contact"
-          placeholder="Your contact..."
-          value={contact}
+          id="phone"
+          name="phone"
+          placeholder="Your phone..."
+          value={phone}
           onChange={handleInputChange}
         />
         <input type="submit" value="Save" />

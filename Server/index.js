@@ -25,7 +25,7 @@ app.post("/api/post", (req, res) => {
   const sqlInsert =
     "INSERT INTO table1 (username, email, phone) VALUES (?, ?, ?)";
   db.query(sqlInsert, [username, email, phone], (err, result) => {
-    if (error) {
+    if (err) {
       console.log(err);
     }
   });
