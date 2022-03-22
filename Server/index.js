@@ -58,7 +58,7 @@ app.put("/api/update/:id", (req, res) => {
   const { id } = req.params;
   const { name, email, phone } = req.body;
   const sglUpdate =
-    "UPDATE table1 SET username = ?, email = ?, phone = ? WHERE userid = ?";
+    "UPDATE table1 SET name = ?, email = ?, phone = ? WHERE userid = ?";
   db.query(sglUpdate, [name, email, phone, id], (err, result) => {
     if (err) {
       console.log(err);
